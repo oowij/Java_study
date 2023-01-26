@@ -1,10 +1,10 @@
 package ch08;
 
-abstract class ì²™ì¶”ë™ëª°{}
+abstract class Ã´Ãßµ¿¸ô{}
 
-interface í¬ìœ ë™ë¬¼{}
+interface Æ÷À¯µ¿¹°{}
 
-class ì‚¬ì  extends ì²™ì¶”ë™ëª° implements í¬ìœ ë™ë¬¼{}
+class »çÀÚ  extends Ã´Ãßµ¿¸ô implements Æ÷À¯µ¿¹°{}
 
 public class InterfaceEx5 {
 
