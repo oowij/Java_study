@@ -12,13 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.InetAddress;
 
-public class InetAddressFrameEx1 extends MFrame implements ActionListener{
+
+public class InetAddressFrameEx1 extends MFrame 
+implements ActionListener{
 	
-	TextArea ta;
 	TextField tf;
+	TextArea ta;
 	Button lookup;
 	InetAddress intAddr;
-	
 	
 	public InetAddressFrameEx1() {
 		setTitle("InetAddress Example");
@@ -36,33 +37,57 @@ public class InetAddressFrameEx1 extends MFrame implements ActionListener{
 		ta.setEditable(false);
 		add(ta);
 		validate();
-		
 	}
 	
-	@Override
+	
 	public void actionPerformed(ActionEvent e) {
-	      Object obj = e.getSource();
-	      if (obj == lookup || obj == tf) {
-	         String host = tf.getText().trim();
-	         try {
-	            intAddr = InetAddress.getByName(host);
-	            String add = intAddr.getHostName();
-	            String ip = intAddr.getHostAddress();
-	            ta.append(" " + add + "\n");
-	            ta.append(" " + ip + "\n");
-	            
-	         } catch (Exception e2) {
-	            ta.append(" [" + host + "]\n");
-	            ta.append(" 해당되는 호스트가 없습니다. \n");
-	         }
-	         tf.setText("");
-	         tf.requestFocus();
-	      }
-	   }
+		Object obj = e.getSource();
+		if(obj==lookup||obj==tf) {
+			String host = tf.getText().trim();
+			try {
+				intAddr = InetAddress.getByName(host);
+				String add = intAddr.getHostName();
+				String ip = intAddr.getHostAddress();
+				ta.append(" " + add + "\n");
+				ta.append(" " + ip + "\n");
+			} catch (Exception e2) {
+				ta.append(" [" + host +"]\n");
+				ta.append(" 해당되는 호스트가 없습니다");
+			}
+			tf.setText("");
+			tf.requestFocus();
+		}
+	}
 	
 	public static void main(String[] args) {
 		new InetAddressFrameEx1();
 	}
-
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

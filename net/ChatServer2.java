@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Iterator;
 import java.util.Vector;
 
 public class ChatServer2 {
@@ -23,15 +22,14 @@ public class ChatServer2 {
 			System.err.println("Error in Server");
 			System.exit(1);//비정상적인 종료
 		}
-		System.out.println("******Chat Server 2.0******");
-		System.out.println("*클라이언트 접속을 기다리고 있습니다.*");
-		System.out.println("*************************");
+		System.out.println("****Chat Server 2.0******");
+		System.out.println("*클라이언트 접속을 기다리고 있습니다");
+		System.out.println("**********************");
 		try {
 			while(true) {
 				Socket sock = server.accept();
 				ClientThread2 ct = new ClientThread2(sock);
 				ct.start();
-				//접속한 클라이언트 Socket객체를 Vector 저장
 				vc.addElement(ct);
 			}
 		} catch (Exception e) {
@@ -72,21 +70,20 @@ public class ChatServer2 {
 		return ct;
 	}
 	
-	class ClientThread2 extends Thread {
+	class ClientThread2 extends Thread{
 		
 		Socket sock;
 		BufferedReader in;
 		PrintWriter out;
-		String id;	
+		String id;
 		
 		public ClientThread2(Socket sock) {
 			try {
-				this.sock = sock;			
+				this.sock = sock;
 				in = new BufferedReader(
 						new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
-				//sock.toString();
-				System.out.println(sock + "접속됨...");
+				System.out.println(sock.toString() + " 접속됨...");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -105,50 +102,59 @@ public class ChatServer2 {
 				}
 			} catch (Exception e) {
 				removeClient(this);
-				System.err.println(sock + "[" + id +"] 끊어짐...");
+				System.err.println(sock+"["+ id +"] 끊어짐...");
 			}
 		}
 		
 		public void routine(String line) {
 			//CHATALL:오늘은 목요일입니다.
-			int idx = line.indexOf(':');
+			int idx = line.indexOf(ChatProtocol2.MODE);
 			String cmd = line.substring(0, idx);//CHATALL
-			String data = line.substring(idx + 1);//오늘은 목요일입니다.
+			String data = line.substring(idx+1);//오늘은 목요일입니다.
 			if(cmd.equals(ChatProtocol2.ID)) {
 				id = data;
 				//새로운 접속자 추가 되었기 때문에 리스트 재전송
-				sendAllMessage(ChatProtocol2.CHATLIST + ChatProtocol2.MODE + getIdList());
+				sendAllMessage(ChatProtocol2.CHATLIST+
+						ChatProtocol2.MODE+getIdList());
 				//새로운 접속자 welcome 전송
-				sendAllMessage(ChatProtocol2.CHATALL + ChatProtocol2.MODE + "[" + id + "]님이 입장하였습니다.");
+				sendAllMessage(ChatProtocol2.CHATALL+
+						ChatProtocol2.MODE+"["+id+"]님이 입장하였습니다");
 			}else if(cmd.equals(ChatProtocol2.CHATALL)) {
-				sendAllMessage(ChatProtocol2.CHATALL + ChatProtocol2.MODE + "[" + id + "]" + data);
+				sendAllMessage(ChatProtocol2.CHATALL+
+						ChatProtocol2.MODE+"["+id+"]"+data);
 			}else if(cmd.equals(ChatProtocol2.CHAT)) {
 				//CHAT:bbb;밥먹자
-				idx = data.indexOf(':');
+				idx = data.indexOf(';');
 				cmd = data.substring(0, idx);//bbb
 				data = data.substring(idx+1);//밥먹자
 				//id : bbb를 가진 클라이언트를 검색
 				ClientThread2 ct = findClient(cmd);
 				if(ct!=null) {
 					//bbb에게 전송
-					ct.sendMessage(ChatProtocol2.CHAT + ChatProtocol2.MODE + "[" + id + "(s)]" +data);
+					ct.sendMessage(ChatProtocol2.CHAT+
+							ChatProtocol2.MODE+"["+id+"(S)]"+data);
 					//자신에게 전송
-					sendMessage(ChatProtocol2.CHAT + ChatProtocol2.MODE + "[" + id + "(s)]" +data);
+					sendMessage(ChatProtocol2.CHAT+
+							ChatProtocol2.MODE+"["+id+"(S)]"+data);
 				}else {
 					//자신에게 보내는 메세지
-					sendMessage(ChatProtocol2.CHAT + ChatProtocol2.MODE + "[" + id + "]님이 접속자가 아닙니다.");
+					sendMessage(ChatProtocol2.CHAT+
+							ChatProtocol2.MODE+"["+cmd+"]님이 접속자가 아닙니다");
 				}
 				
 			}else if(cmd.equals(ChatProtocol2.MESSAGE)) {
-				//MESSAGE:ccc;오늘뭐해?
-				idx = data.indexOf(':');
+				//MESSAGE:ccc;오늘 머해?
+				idx = data.indexOf(';');
 				cmd = data.substring(0, idx);//ccc
-				data = data.substring(idx+1);//오늘뭐해?
+				data = data.substring(idx+1);//오늘 머해?
 				ClientThread2 ct = findClient(cmd);
 				if(ct!=null) {
-					ct.sendMessage(ChatProtocol2.MESSAGE + ChatProtocol2.MODE + id + ";" + data);
+					//MESSAGE:aaa;오늘 머해?
+					ct.sendMessage(ChatProtocol2.MESSAGE+
+							ChatProtocol2.MODE+id+";"+data);
 				}else {
-					sendMessage(ChatProtocol2.CHAT + ChatProtocol2.MODE + "[" + cmd + "]님이 접속자가 아닙니다.");
+					sendMessage(ChatProtocol2.CHAT+
+							ChatProtocol2.MODE+"["+cmd+"]님이 접속자가 아닙니다");
 				}
 			}
 		}
@@ -159,13 +165,10 @@ public class ChatServer2 {
 		
 	}//--ClientThread2
 	
-	
 	public static void main(String[] args) {
 		new ChatServer2();
-//		String str = "CHATALL:오늘은 목요일입니다.";
-//		int idx = str.indexOf(':');
-//		System.out.println(str.substring(0, idx));
-//		System.out.println(str.substring(idx + 1));
 	}
-
 }
+
+
+

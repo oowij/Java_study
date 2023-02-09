@@ -46,9 +46,9 @@ public class URLFrameEx1 extends MFrame implements ActionListener {
 		if(obj==tf||obj==connect) {
 			String host = tf.getText().trim();
 			try {
-				url = new URL(host);				
+				url = new URL(host);
 			} catch (Exception e2) {
-				ta.append("해당되는 호스트가 없습니다.");
+				ta.append("해당되는 호스트가 없습니다");
 			}
 			ta.setText("");
 			connectHost(url);
@@ -58,7 +58,7 @@ public class URLFrameEx1 extends MFrame implements ActionListener {
 			save.setEnabled(false);
 			tf.setText("http://");
 			ta.setText("");
-			ta.append("저장하였습니다.");
+			ta.append("저장하였습니다");
 			tf.requestFocus();
 		}
 	}
@@ -67,26 +67,26 @@ public class URLFrameEx1 extends MFrame implements ActionListener {
 	public void connectHost(URL url) {
 		try {
 			BufferedReader br = new BufferedReader(
-					new InputStreamReader(url.openStream(), "UTF-8"));
+					new InputStreamReader(
+							url.openStream(), "UTF-8"));
 			String line = "";
-			while (true) {
+			while(true) {
 				line = br.readLine();
-				if(line==null) 
-					break;
-				ta.append(line + "\n");
+				if(line==null) break;
+				ta.append(line+"\n");
 			}
 			br.close();
 		} catch (Exception e) {
-			ta.append("해당되는 호스트가 없습니다");
+			ta.append("해당하는 호스트가 없습니다");
 		}
 	}
-
+	
 	public void createFile(String file, String content) {
 		try {
-			FileWriter fw = new FileWriter("net/" + file +  ".html");
+			FileWriter fw = new FileWriter("net/"+file+".html");
 			fw.write(content);
 			fw.close();
-		} catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -95,6 +95,10 @@ public class URLFrameEx1 extends MFrame implements ActionListener {
 		URLFrameEx1 ex = new URLFrameEx1();
 	}
 }
+
+
+
+
 
 
 

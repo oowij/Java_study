@@ -22,9 +22,9 @@ public class ChatServer1 {
 			System.err.println("Error in Server");
 			System.exit(1);//비정상적인 종료
 		}
-		System.out.println("**********");
-		System.out.println("ChatServer1 v1.0 시작되었습니다.");
-		System.out.println("**********");
+		System.out.println("***********************");
+		System.out.println("ChatServer1 v1.0 시작되었습니다");
+		System.out.println("***********************");
 		try {
 			while(true) {
 				Socket sock = server.accept();
@@ -46,12 +46,13 @@ public class ChatServer1 {
 			ct.sendMessage(msg);
 		}
 	}
+	
 	//접속이 끊어진 Client를 Vector에서 제거
 	public void removeClient(ClientThread1 ct) {
 		vc.remove(ct);
 	}
 	
-	class ClientThread1 extends Thread {
+	class ClientThread1 extends Thread{
 		
 		Socket sock;
 		BufferedReader in;
@@ -60,32 +61,31 @@ public class ChatServer1 {
 		
 		public ClientThread1(Socket sock) {
 			try {
-				this.sock = sock;			
+				this.sock = sock;
 				in = new BufferedReader(
 						new InputStreamReader(sock.getInputStream()));
 				out = new PrintWriter(sock.getOutputStream(),true);
-				//sock.toString();
-				System.out.println(sock + "접속됨...");
+				System.out.println(sock.toString() + " 접속됨...");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
-
+		
 		@Override
 		public void run() {
 			try {
-				//Client에게 최조 보내는 메세지
+				//Client에게 최초 보내는 메세지
 				out.println("사용하실 아이디를 입력하세요");
 				//Client에서 입력한 id를 저장
 				id = in.readLine();
 				//접속한 모든 Client에게 welcome 메시지 전달
-				sendAllMessage("[" + id + "]님이 입장하였습니다.");
+				sendAllMessage("["+id+"]님이 입장 하였습니다");
 				String line = "";
 				while(true) {
 					line = in.readLine();
 					if(line==null)
 						break;//Client 접속 종료
-					sendAllMessage("[" + id + "]" + line);
+					sendAllMessage("["+id+"]"+ line);
 				}
 				in.close();
 				out.close();
@@ -93,7 +93,7 @@ public class ChatServer1 {
 			} catch (Exception e) {
 				//자신의 객체를 Vector에서 제거
 				removeClient(this);
-				System.err.println(sock + "끊어짐...");
+				System.err.println(sock + " 끊어짐...");
 			}
 		}
 		
@@ -101,6 +101,7 @@ public class ChatServer1 {
 		public void sendMessage(String msg) {
 			out.println(msg);
 		}
+		
 	}//--ClientThread1
 	
 	public static void main(String[] args) {

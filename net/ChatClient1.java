@@ -17,7 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 
-public class ChatClient1 extends JFrame implements ActionListener, Runnable{
+public class ChatClient1 extends JFrame 
+implements ActionListener, Runnable{
 	
 	JButton btn1, btn2;
 	JTextField tf1, tf2;
@@ -25,13 +26,13 @@ public class ChatClient1 extends JFrame implements ActionListener, Runnable{
 	JPanel p1, p2;
 	BufferedReader in;
 	PrintWriter out;
-	public static final int port = 8001;
 	String id;
+	public static final int PORT = 8001;
 	
 	public ChatClient1() {
 		setSize(350, 400);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setTitle("MyChat 1.0");
+		setTitle("MyChat v1.0");
 		p1 = new JPanel();
 		p1.setBackground(new Color(100,200,100));
 		p1.add(new Label("HOST ",Label.CENTER));
@@ -67,11 +68,11 @@ public class ChatClient1 extends JFrame implements ActionListener, Runnable{
 		}else if(obj==tf2||obj==btn2/*send*/) {
 			String str = tf2.getText().trim();
 			if(str.length()==0)
-				return;//서버로 전송되지 않고 메서드 빠져 나감
-			if(id==null) {
+				return;//서버로 전송하지 않고 메서드 빠져 나감
+			if(id==null) {//최초 한번만 실행
 				id = str;
-				setTitle(getTitle() + "[" + id + "]");
-				ta.setText("채팅을 시작합니다.\n");
+				setTitle(getTitle() + " [" + id + "]");
+				ta.setText("채팅을 시작합니다\n");
 			}
 			out.println(str);//서버 전송
 			tf2.setText("");
@@ -79,35 +80,33 @@ public class ChatClient1 extends JFrame implements ActionListener, Runnable{
 		}
 	}//--actionPerformed
 	
-	@Override
-	//서버로 부터 메세지가 들어오면 반응하는 기능
+	@Override //서버로 부터 메세지가 들어오면 반응하는 기능
 	public void run() {
 		try {
 			while(true) {
-				ta.append(in.readLine() + "\n");
+				ta.append(in.readLine()+"\n");
 				tf2.requestFocus();
 			}
-				
 		} catch (Exception e) {
 			System.err.println("Error in run");
 			e.printStackTrace();
-			System.exit(1);;
+			System.exit(1);
 		}
 	}//--run
 	
 	public void connect(String host){
 		try {
-			Socket sock = new Socket(host, port);			
+			Socket sock = new Socket(host, PORT);
 			in = new BufferedReader(
 					new InputStreamReader(sock.getInputStream()));
 			out = new PrintWriter(sock.getOutputStream(),true);
-			ta.append(in.readLine() + "\n");
+			ta.append(in.readLine()+"\n");
 			tf2.requestFocus();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	      //Thread Start ->run 메서드 호출
-	      new Thread(this).start();
+		//Thread Start -> run 메서드 호출
+		new Thread(this).start();
 	}//--connect
 	
 	public static void main(String[] args) {
